@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class PodDynamicTableFactory implements DynamicTableSourceFactory {
-    private static final String IDENTIFIER = "pod";
+    private static final String IDENTIFIER = "k8s";
 
     @Override
     public DynamicTableSource createDynamicTableSource(Context context) {

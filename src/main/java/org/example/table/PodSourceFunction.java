@@ -13,6 +13,7 @@ import org.apache.flink.api.java.typeutils.ResultTypeQueryable;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
+import org.apache.flink.table.data.StringData;
 import org.apache.flink.types.RowKind;
 
 import java.util.concurrent.TimeUnit;
@@ -60,7 +61,7 @@ public class PodSourceFunction extends RichSourceFunction<RowData> implements Re
     }
 
     private RowData convert(Watch.Response<V1Pod> item) {
-        GenericRowData row = new GenericRowData(3);
+        GenericRowData row = new GenericRowData(4);
         switch (item.type) {
             case "ADDED":
                 row.setRowKind(RowKind.INSERT);
@@ -71,9 +72,10 @@ public class PodSourceFunction extends RichSourceFunction<RowData> implements Re
             default:
                 row.setRowKind(RowKind.UPDATE_AFTER);
         }
-        row.setField(0, item.object.getMetadata().getNamespace());
-        row.setField(1, item.object.getMetadata().getName());
-        row.setField(2, item.object.getStatus().getPhase());
+        row.setField(0, StringData.fromString(item.object.getMetadata().getUid()));
+        row.setField(1, StringData.fromString(item.object.getMetadata().getNamespace()));
+        row.setField(2, StringData.fromString(item.object.getMetadata().getName()));
+        row.setField(3, StringData.fromString(item.object.getStatus().getPhase()));
         return row;
     }
 
